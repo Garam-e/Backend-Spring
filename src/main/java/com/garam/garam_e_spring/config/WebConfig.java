@@ -1,4 +1,4 @@
-package com.garam.garam_e_spring;
+package com.garam.garam_e_spring.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
