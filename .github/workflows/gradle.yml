@@ -71,7 +71,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "*.jar"
           target: "~/cicd"
-
       - name: Use SSH agent for remote commands
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
