@@ -28,10 +28,20 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+
+      - name: Copy application.yml
+        env:
+          OCCUPY_DEPLOY: ${{ secrets.OCCUPY_DEPLOY }}
+          OCCUPY_DEPLOY_DIR: src/main/resources
+          OCCUPY_DEPLOY_TEST_DIR: src/test/resources
+          OCCUPY_DEPLOY_DIR_FILE_NAME: application.yml
+        run: echo $OCCUPY_DEPLOY | base64 --decode > $OCCUPY_DEPLOY_DIR/$OCCUPY_DEPLOY_DIR_FILE_NAME
+
       - name: Build with Gradle
         uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
         with:
           arguments: build
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
