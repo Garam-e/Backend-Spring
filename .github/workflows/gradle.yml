@@ -62,9 +62,18 @@ jobs:
           source: "*.jar"
           target: "~/cicd"
 
-      - name: Execute remote commands
+      - name: Use SSH agent for remote commands
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} -i ${{ secrets.SSH_PRIVATE_KEY }} "sudo fuser -k 8080/tcp"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} -i ${{ secrets.SSH_PRIVATE_KEY }} "sudo nohup java -jar ~/cicd/*.jar &"
+          eval `ssh-agent -s`
+          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo fuser -k 8080/tcp"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo nohup java -jar ~/cicd/*.jar &"
+
+#      - name: Execute remote commands
+#        run: |
+#          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} -i ${{ secrets.SSH_PRIVATE_KEY }} "sudo fuser -k 8080/tcp"
+#          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} -i ${{ secrets.SSH_PRIVATE_KEY }} "sudo nohup java -jar ~/cicd/*.jar &"
 #          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo fuser -k 8080/tcp"
 #          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo nohup java -jar ~/cicd/*.jar &"
