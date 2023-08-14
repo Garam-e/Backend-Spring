@@ -2,7 +2,7 @@ package com.garam.garam_e_spring.controller;
 
 import com.garam.garam_e_spring.response.BaseResponseDto;
 import com.garam.garam_e_spring.service.EmailService;
-import com.garam.garam_e_spring.user.UserResponseDto;
+import com.garam.garam_e_spring.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +26,7 @@ public class TestController {
     }
 
     @PostMapping("/api/test/email")
-    public BaseResponseDto<UserResponseDto.EmailCheck> testEmail(
+    public BaseResponseDto<UserResponseDto.EmailCodeCheck> testEmail(
             @RequestParam String email
     ) throws Exception {
 

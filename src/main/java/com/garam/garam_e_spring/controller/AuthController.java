@@ -3,8 +3,8 @@ package com.garam.garam_e_spring.controller;
 import com.garam.garam_e_spring.response.BaseResponseDto;
 import com.garam.garam_e_spring.service.AuthService;
 import com.garam.garam_e_spring.service.EmailService;
-import com.garam.garam_e_spring.user.UserRequestDto;
-import com.garam.garam_e_spring.user.UserResponseDto;
+import com.garam.garam_e_spring.dto.UserRequestDto;
+import com.garam.garam_e_spring.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,17 +30,17 @@ public class AuthController {
         return authService.reissue(token);
     }
 
-    @PostMapping("/email")
-    public BaseResponseDto<UserResponseDto.EmailCheck> sendEmail(
-            @RequestParam String email
+    @PostMapping("/{email}")
+    public BaseResponseDto<UserResponseDto.EmailCodeCheck> sendEmail(
+            @PathVariable String email
     ) throws Exception {
 
         return emailService.sendSimpleMessage(email);
     }
 
     @PatchMapping("/email")
-    public BaseResponseDto<UserResponseDto.EmailCheck> checkEmail(
-            @RequestBody UserRequestDto.EmailCheck request
+    public BaseResponseDto<UserResponseDto.EmailCodeCheck> checkEmailCode(
+            @RequestBody UserRequestDto.EmailCodeCheck request
     ) {
         return emailService.checkEmail(request.getEmail(), request.getCode());
     }

@@ -1,6 +1,5 @@
-package com.garam.garam_e_spring.user;
+package com.garam.garam_e_spring.dto;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,7 +56,7 @@ public class UserRequestDto {
     @Getter
     @Setter
     @AllArgsConstructor
-    public static class EmailCheck {
+    public static class EmailCodeCheck {
         private String email;
         private String code;
     }
@@ -69,5 +68,22 @@ public class UserRequestDto {
         private String email;
         private String newPassword;
         private String newNickname;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class Inquiry {
+        private String title;
+        private String content;
+        private String email;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class UpdateLanguage {
+        private String userId;
+        private String language;
     }
 }

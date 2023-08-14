@@ -1,4 +1,4 @@
-package com.garam.garam_e_spring.user;
+package com.garam.garam_e_spring.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +18,7 @@ public class UserResponseDto {
     @Getter
     @Setter
     public static class Register {
+        private boolean isSucceed;
         private String message;
     }
 
@@ -40,6 +41,7 @@ public class UserResponseDto {
     @Getter
     @Setter
     public static class Withdraw {
+        private boolean isSucceed;
         private String message;
     }
 
@@ -53,7 +55,7 @@ public class UserResponseDto {
     @AllArgsConstructor
     @Getter
     @Setter
-    public static class EmailCheck {
+    public static class EmailCodeCheck {
         private boolean isSucceed;
     }
 
@@ -61,6 +63,22 @@ public class UserResponseDto {
     @Getter
     @Setter
     public static class UpdateInfo {
+        private boolean isSucceed;
+        private String message;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class UpdateLanguage {
+        private boolean isSucceed;
+        private String message;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class Inquiry {
         private boolean isSucceed;
         private String message;
     }

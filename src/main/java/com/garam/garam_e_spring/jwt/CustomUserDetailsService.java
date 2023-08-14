@@ -1,22 +1,18 @@
 package com.garam.garam_e_spring.jwt;
 
-import com.garam.garam_e_spring.entity.User;
-import com.garam.garam_e_spring.user.UserRepository;
+import com.garam.garam_e_spring.entity.user.User;
+import com.garam.garam_e_spring.entity.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
@@ -30,6 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .userId(user.getUserId())
                 .password(user.getPassword())
                 .nickname(user.getNickname())
+                .language(user.getLanguage())
                 .roles(user.getRoles())
                 .build();
     }

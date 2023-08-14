@@ -1,19 +1,15 @@
 package com.garam.garam_e_spring.controller;
 
+import com.garam.garam_e_spring.dto.UserRequestDto;
+import com.garam.garam_e_spring.dto.UserResponseDto;
 import com.garam.garam_e_spring.jwt.JwtTokenProvider;
 import com.garam.garam_e_spring.response.BaseResponseDto;
-import com.garam.garam_e_spring.entity.User;
 import com.garam.garam_e_spring.response.ErrorMessage;
-import com.garam.garam_e_spring.user.UserRequestDto;
-import com.garam.garam_e_spring.user.UserResponseDto;
+import com.garam.garam_e_spring.service.EmailService;
 import com.garam.garam_e_spring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,6 +17,7 @@ import java.util.Collections;
 public class UserController {
 
     private final UserService userService;
+    private final EmailService emailService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/join")
@@ -34,7 +31,7 @@ public class UserController {
         return userService.join(request);
     }
 
-    @PatchMapping("/logout")
+    @PatchMapping("/")
     public BaseResponseDto<UserResponseDto.Logout> logout(
             @RequestBody UserRequestDto.Logout request
     ) {
@@ -49,4 +46,30 @@ public class UserController {
         return userService.update(
                 request.getEmail(), request.getNewPassword(), request.getNewNickname());
     }
+
+    @DeleteMapping("/")
+    public BaseResponseDto<UserResponseDto.Withdraw> withdraw(
+            @RequestBody UserRequestDto.Withdraw request
+    ) {
+        return userService.withdraw(request);
+    }
+
+    @PostMapping("/inquiry")
+    public BaseResponseDto<UserResponseDto.Inquiry> inquiry(
+            @RequestBody UserRequestDto.Inquiry request
+    ) {
+        try {
+            return emailService.sendInquiryMessage(request.getTitle(), request.getContent(), request.getEmail());
+        } catch (Exception e) {
+            return new BaseResponseDto<>(new UserResponseDto.Inquiry(false, "메일 전송 실패"));
+        }
+    }
+
+    @PatchMapping("/lang")
+    public BaseResponseDto<UserResponseDto.UpdateLanguage> updateLanguage(
+            @RequestBody UserRequestDto.UpdateLanguage request
+    ) {
+        return userService.updateLanguage(request.getLanguage(), request.getUserId());
+    }
+
 }

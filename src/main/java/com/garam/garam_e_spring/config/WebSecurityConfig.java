@@ -29,7 +29,7 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**").permitAll()
-                .antMatchers("/v2/**", "/api/test/email", "/api/user/join", "/api/auth/**", "/error").permitAll()
+                .antMatchers("/v2/**", "/api/test/email", "/api/user/join", "/api/auth/**", "/error", "/chat/**").permitAll()
                 .antMatchers("/api/test").hasRole("USER")
                 .antMatchers("/api/user/**").hasRole("USER")
                 .and()

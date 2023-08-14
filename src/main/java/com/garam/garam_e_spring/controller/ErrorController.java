@@ -1,7 +1,6 @@
 package com.garam.garam_e_spring.controller;
 
 import com.garam.garam_e_spring.response.BaseResponseDto;
-import com.garam.garam_e_spring.response.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

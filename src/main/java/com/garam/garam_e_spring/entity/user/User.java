@@ -1,5 +1,6 @@
-package com.garam.garam_e_spring.entity;
+package com.garam.garam_e_spring.entity.user;
 
+import com.garam.garam_e_spring.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,6 +34,9 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column
     private String nickname;
+
+    @Column
+    private String language;
 
     @Column
     @ElementCollection(fetch = FetchType.EAGER)
