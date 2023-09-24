@@ -36,9 +36,7 @@ jobs:
           OCCUPY_DEPLOY_TEST_DIR: src/test/resources
           OCCUPY_DEPLOY_DIR_FILE_NAME: application.yml
         run: |
-            cd ./src/main
-            mkdir resources
-            cd ./resources
+            cd ./src/main/resources
             touch ./application.yml
             echo "$OCCUPY_DEPLOY" > ./application.yml
             
