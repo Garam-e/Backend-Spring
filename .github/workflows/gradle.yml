@@ -35,12 +35,24 @@ jobs:
           OCCUPY_DEPLOY_DIR: src/main/resources
           OCCUPY_DEPLOY_TEST_DIR: src/test/resources
           OCCUPY_DEPLOY_DIR_FILE_NAME: application.yml
-        run: echo $OCCUPY_DEPLOY | base64 --decode > $OCCUPY_DEPLOY_DIR/$OCCUPY_DEPLOY_DIR_FILE_NAME
-
+        run: |
+            cd ./src/main
+            mkdir resources
+            cd ./resources
+            touch ./application.yml
+            echo "$OCCUPY_DEPLOY" > ./application.yml
+            
       - name: Build with Gradle
         uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
         with:
-          arguments: build
+          arguments: clean build
+
+      ## docker build & push to production
+      - name: Docker build & push to prod
+        run: |
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker build -f Dockerfile -t minchogt/garam-server .
+            docker push minchogt/garam-server
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -56,28 +68,24 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: cicdsample
+          
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Transfer to Server
-        uses: appleboy/scp-action@master
+          
+        ## deploy to production
+      - name: Deploy to prod
+        uses: appleboy/ssh-action@master
+        id: deploy-prod
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "*.jar"
-          target: "~/cicd"
-      - name: Execute remote commands
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo fuser -k 8080/tcp"
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo nohup java -jar ~/cicd/*.jar > nohup.out 2> nohup.err < /dev/null &"
-
-#      - name: Use SSH agent for remote commands
-#        env:
-#          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-#        run: |
-#          eval `ssh-agent -s`
-#          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo nohup java -jar ~/cicd/*.jar &"
-#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo fuser -k 8080/tcp"
+            host: ${{ secrets.SERVER_IP }}
+            username: ${{ secrets.SSH_USER }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            envs: GITHUB_SHA
+            script: |
+                sudo docker rm garam-server
+                sudo docker pull minchogt/garam-server
+                docker-compose up -d garam-server
+                docker image prune -f
+      
