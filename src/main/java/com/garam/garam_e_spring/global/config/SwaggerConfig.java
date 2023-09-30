@@ -21,7 +21,7 @@ public class SwaggerConfig {
                 .useDefaultResponseMessages(false) //기본 응답코드 표시
                 .apiInfo(apiInfo()) //Api 정보
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.garam.garam_e_spring.controller")) //적용할 패키지명
+                .apis(RequestHandlerSelectors.basePackage("com.garam.garam_e_spring.domain")) //적용할 패키지명
                 .paths(PathSelectors.any()) //패키지 하위에서 적용할 url path 지정
                 .build();
     }
