@@ -31,7 +31,7 @@ public class UserController {
         return userService.join(request);
     }
 
-    @PatchMapping("/")
+    @PatchMapping("")
     public BaseResponseDto<UserResponseDto.Logout> logout(
             @RequestBody UserRequestDto.Logout request
     ) {
@@ -47,7 +47,7 @@ public class UserController {
                 request.getEmail(), request.getNewPassword(), request.getNewNickname());
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("")
     public BaseResponseDto<UserResponseDto.Withdraw> withdraw(
             @RequestBody UserRequestDto.Withdraw request
     ) {

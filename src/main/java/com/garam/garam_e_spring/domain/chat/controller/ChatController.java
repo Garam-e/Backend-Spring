@@ -20,7 +20,7 @@ public class ChatController {
 
     private final String flaskUrl = "http://localhost:5000";
 
-    @PostMapping("/")
+    @PostMapping("")
     public BaseResponseDto<ChatResponseDto.Chat> chat(
             @RequestBody ChatRequestDto.Chat request
     ) {
