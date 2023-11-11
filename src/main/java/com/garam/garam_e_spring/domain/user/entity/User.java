@@ -39,6 +39,11 @@ public class User extends BaseEntity implements UserDetails {
     private String language;
 
     @Column
+    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    private List<Bookmark> bookmarks = new ArrayList<>();
+
+    @Column
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
@@ -73,5 +78,9 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void addBookmark(Bookmark bookmark){
+        this.bookmarks.add(bookmark);
     }
 }

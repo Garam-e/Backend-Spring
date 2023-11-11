@@ -1,7 +1,10 @@
 package com.garam.garam_e_spring.domain.user.service;
 
 
+import com.garam.garam_e_spring.domain.user.dto.res.BookmarkCreateResponseDto;
+import com.garam.garam_e_spring.domain.user.entity.Bookmark;
 import com.garam.garam_e_spring.domain.user.entity.User;
+import com.garam.garam_e_spring.domain.user.repository.BookmarkRepository;
 import com.garam.garam_e_spring.domain.user.repository.UserRepository;
 import com.garam.garam_e_spring.domain.user.dto.req.UserRequestDto;
 import com.garam.garam_e_spring.domain.user.dto.res.UserResponseDto;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -29,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
     private final PasswordEncoder passwordEncoder;
@@ -115,5 +120,34 @@ public class UserService {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         });
         return new BaseResponseDto<>(new UserResponseDto.UpdateLanguage(true, "언어 변경 성공"));
+    }
+
+    @Transactional
+    public BaseResponseDto<BookmarkCreateResponseDto> createBookmark(String id, String message) {
+        User user = userRepository.findByUserId(id).orElse(null);
+        if (user == null) {
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        }
+
+        Bookmark newBookmark = Bookmark.createBookmark(message, user);
+        bookmarkRepository.save(newBookmark);
+
+        return new BaseResponseDto<>(BookmarkCreateResponseDto.of("북마크 생성 성공"));
+    }
+
+    @Transactional
+    public BaseResponseDto<List<String>> getBookmark(String userId) {
+
+        User user = userRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        }
+
+        List<Bookmark> bookmarks = user.getBookmarks();
+        List<String> result = bookmarks.stream()
+                .map(Bookmark::getMessage)
+                .collect(Collectors.toList());
+
+        return new BaseResponseDto<>(result);
     }
 }

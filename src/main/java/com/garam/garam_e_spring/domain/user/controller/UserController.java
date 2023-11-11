@@ -1,6 +1,8 @@
 package com.garam.garam_e_spring.domain.user.controller;
 
+import com.garam.garam_e_spring.domain.user.dto.req.BookmarkRequestDto;
 import com.garam.garam_e_spring.domain.user.dto.req.UserRequestDto;
+import com.garam.garam_e_spring.domain.user.dto.res.BookmarkCreateResponseDto;
 import com.garam.garam_e_spring.domain.user.dto.res.UserResponseDto;
 import com.garam.garam_e_spring.global.jwt.JwtTokenProvider;
 import com.garam.garam_e_spring.global.response.BaseResponseDto;
@@ -8,10 +10,13 @@ import com.garam.garam_e_spring.global.response.ErrorMessage;
 import com.garam.garam_e_spring.domain.user.service.EmailService;
 import com.garam.garam_e_spring.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -72,4 +77,17 @@ public class UserController {
         return userService.updateLanguage(request.getLanguage(), request.getUserId());
     }
 
+    @PostMapping("/bookmark")
+    public BaseResponseDto<BookmarkCreateResponseDto> createBookmark(
+            @RequestBody BookmarkRequestDto request
+    ) {
+        return userService.createBookmark(request.getUserId(), request.getMessage());
+    }
+
+    @GetMapping("/bookmark/{userId}")
+    public BaseResponseDto<?> getBookmarks(
+            @PathVariable String userId
+    ) {
+        return userService.getBookmark(userId);
+    }
 }
